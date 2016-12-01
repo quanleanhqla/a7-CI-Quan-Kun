@@ -12,14 +12,14 @@ import java.io.IOException;
  */
 public class GameWindow extends Frame{
     Image background;
-    Image plane;
-    Image planeAlly;
+    Image plane1;
+    Image plane2;
     Image planeEnemy;
-    private int planeX = 100;
-    private int planeY = 400;
+    private int plane1X = 100;
+    private int plane1Y = 400;
 
-    private int planeAX = 400;
-    private int planeAY = 400;
+    private int plane2X = 400;
+    private int plane2Y = 400;
 
     private int planeEX = 250;
     private int planeEY = 100;
@@ -71,8 +71,8 @@ public class GameWindow extends Frame{
         });
         try {
             background = ImageIO.read(new File("resources/background.png"));
-            plane = ImageIO.read(new File("resources/plane3.png"));
-            planeAlly =  ImageIO.read(new File("resources/plane3.png"));
+            plane1 = ImageIO.read(new File("resources/plane3.png"));
+            plane2 =  ImageIO.read(new File("resources/plane3.png"));
             planeEnemy = ImageIO.read(new File("resources/enemy_plane_yellow_1.png"));
         } catch (IOException e) {
             System.out.println("load image failed");
@@ -89,35 +89,35 @@ public class GameWindow extends Frame{
                 System.out.println("keyPressed");
                 switch (e.getKeyCode()){
                     case KeyEvent.VK_UP:
-                        planeY-=5;
+                        plane1Y-=5;
                         repaint();
                         break;
                     case KeyEvent.VK_DOWN:
-                        planeY+=5;
+                        plane1Y+=5;
                         repaint();
                         break;
                     case KeyEvent.VK_LEFT:
-                        planeX-=5;
+                        plane1X-=5;
                         repaint();
                         break;
                     case KeyEvent.VK_RIGHT:
-                        planeX+=5;
+                        plane1X+=5;
                         repaint();
                         break;
                     case KeyEvent.VK_W:
-                        planeAY-=5;
+                        plane2Y-=5;
                         repaint();
                         break;
                     case KeyEvent.VK_S:
-                        planeAY+=5;
+                        plane2Y+=5;
                         repaint();
                         break;
                     case KeyEvent.VK_A:
-                        planeAX-=5;
+                        plane2X-=5;
                         repaint();
                         break;
                     case KeyEvent.VK_D:
-                        planeAX+=5;
+                        plane2X+=5;
                         repaint();
                         break;
 
@@ -137,8 +137,8 @@ public class GameWindow extends Frame{
     @Override
     public void paint(Graphics g) {
         g.drawImage(background, 0, 0, 800, 600, null);
-        g.drawImage(plane, planeX, planeY, 70, 90, null);
-        g.drawImage(planeAlly, planeAX, planeAY, 70,90, null);
+        g.drawImage(plane1, plane1X, plane1Y, 70, 90, null);
+        g.drawImage(plane2, plane2X, plane2Y, 70,90, null);
         g.drawImage(planeEnemy, planeEX, planeEY, 100, 100, null);
 
     }
