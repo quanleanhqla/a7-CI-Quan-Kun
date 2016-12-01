@@ -13,8 +13,18 @@ import java.io.IOException;
 public class GameWindow extends Frame{
     Image background;
     Image plane;
+    Image planeAlly;
+    Image planeEnemy;
     private int planeX = 100;
-    private int planeY = 200;
+    private int planeY = 400;
+
+    private int planeAX = 400;
+    private int planeAY = 400;
+
+    private int planeEX = 250;
+    private int planeEY = 100;
+
+
 
     public GameWindow(){
         setVisible(true);
@@ -62,6 +72,8 @@ public class GameWindow extends Frame{
         try {
             background = ImageIO.read(new File("resources/background.png"));
             plane = ImageIO.read(new File("resources/plane3.png"));
+            planeAlly =  ImageIO.read(new File("resources/plane3.png"));
+            planeEnemy = ImageIO.read(new File("resources/enemy_plane_yellow_1.png"));
         } catch (IOException e) {
             System.out.println("load image failed");
             e.printStackTrace();
@@ -92,6 +104,22 @@ public class GameWindow extends Frame{
                         planeX+=5;
                         repaint();
                         break;
+                    case KeyEvent.VK_W:
+                        planeAY-=5;
+                        repaint();
+                        break;
+                    case KeyEvent.VK_S:
+                        planeAY+=5;
+                        repaint();
+                        break;
+                    case KeyEvent.VK_A:
+                        planeAX-=5;
+                        repaint();
+                        break;
+                    case KeyEvent.VK_D:
+                        planeAX+=5;
+                        repaint();
+                        break;
 
                 }
 
@@ -110,6 +138,8 @@ public class GameWindow extends Frame{
     public void paint(Graphics g) {
         g.drawImage(background, 0, 0, 800, 600, null);
         g.drawImage(plane, planeX, planeY, 70, 90, null);
+        g.drawImage(planeAlly, planeAX, planeAY, 70,90, null);
+        g.drawImage(planeEnemy, planeEX, planeEY, 100, 100, null);
 
     }
 }
