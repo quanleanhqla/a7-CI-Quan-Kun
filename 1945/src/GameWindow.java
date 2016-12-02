@@ -72,7 +72,7 @@ public class GameWindow extends Frame{
         try {
             background = ImageIO.read(new File("resources/background.png"));
             plane1 = ImageIO.read(new File("resources/plane3.png"));
-            plane2 =  ImageIO.read(new File("resources/plane3.png"));
+            plane2 =  ImageIO.read(new File("resources/plane4.png"));
             planeEnemy = ImageIO.read(new File("resources/enemy_plane_yellow_1.png"));
         } catch (IOException e) {
             System.out.println("load image failed");
