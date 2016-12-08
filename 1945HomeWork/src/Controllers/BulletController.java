@@ -1,37 +1,24 @@
 package Controllers;
 
-import Models.BulletModel;
-import Models.PlaneModel;
-import Views.BulletView;
+import Models.Model;
+import Views.View;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
 
 /**
  * Created by QuanLA on 12/5/2016.
  */
-public class BulletController {
-    private BulletModel bulletModel;
-    private BulletView bulletView;
+public class BulletController extends Controller {
+    public BulletController() {
+    }
 
+    public BulletController(Model model, View view) {
+        super(model, view);
+    }
 
-    public BulletController(BulletModel bulletModel, BulletView bulletView) {
-        this.bulletModel = bulletModel;
-        this.bulletView = bulletView;
+    public void run(){
+        this.model.move(0, -5);
     }
 
 
-
-
-    public void draw(Graphics g){
-        bulletView.draw(g, bulletModel);
-    }
-
-    public BulletModel getBulletModel() {
-        return bulletModel;
-    }
-
-    public BulletView getBulletView() {
-        return bulletView;
-    }
 }
