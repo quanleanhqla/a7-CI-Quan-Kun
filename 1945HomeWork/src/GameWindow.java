@@ -1,4 +1,5 @@
 import Controllers.*;
+import Controllers.Manager.PlaneEnemyControllerManager;
 import Models.Model;
 import Views.View;
 
@@ -19,18 +20,18 @@ public class GameWindow extends Frame implements Runnable{
     Image background;
     PlaneController planeController;
     Vector<BulletController> bulletVector;
-    Vector<BulletEnemyController> bulletEVector;
-    PlaneEnemyController planeEnemyController;
+    PlaneEnemyControllerManager planeEnemyControllerManager;
 
     BufferedImage backBuffer;
     public GameWindow() {
 
         Image planeImage = null;
         bulletVector = new Vector<>();
-        bulletEVector = new Vector<>();
         KeySetting keySetting = new KeySetting(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT);
         planeController = PlaneController.createPlane(300, 300, "resources/plane3.png", keySetting);
-        planeEnemyController = PlaneEnemyController.createPlaneE(400, 100, "resources/enemy_plane_white_1.png");
+        planeEnemyControllerManager = new PlaneEnemyControllerManager();
+
+
         setVisible(true);
         setSize(800, 600);
         backBuffer = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
@@ -109,10 +110,8 @@ public class GameWindow extends Frame implements Runnable{
         Graphics backBufferGraphics = backBuffer.getGraphics();
         backBufferGraphics.drawImage(background, 0, 0, 800, 600, null);
         planeController.draw(backBufferGraphics);
-        planeEnemyController.draw(backBufferGraphics);
+        planeEnemyControllerManager.draw(backBufferGraphics);
         for(BulletController bullet : bulletVector)
-            bullet.draw(backBufferGraphics);
-        for(BulletEnemyController bullet : bulletEVector)
             bullet.draw(backBufferGraphics);
         g.drawImage(backBuffer, 0, 0, 800, 600, null);
     }
@@ -120,7 +119,7 @@ public class GameWindow extends Frame implements Runnable{
 
     @Override
     public void run() {
-        int milisecond = 0;
+        planeEnemyControllerManager.spawn();
         while(true) {
             try {
                 this.repaint();
@@ -128,14 +127,7 @@ public class GameWindow extends Frame implements Runnable{
                 for(BulletController bullet : bulletVector) {
                     bullet.run();
                 }
-                for(BulletEnemyController bullet : bulletEVector)
-                    bullet.run();
-                milisecond+=17;
-                if(milisecond%510 == 0) planeEnemyController.run();
-                if(milisecond%680 == 0){
-                    BulletEnemyController bulletEnemyController = BulletEnemyController.createBulletE(planeEnemyController.getModel().getX() + planeEnemyController.getModel().getWidth()/2 - 10, planeEnemyController.getModel().getY() + planeEnemyController.getModel().getHeight());
-                    bulletEVector.add(bulletEnemyController);
-                }
+                planeEnemyControllerManager.run();
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
