@@ -5,6 +5,8 @@ import Models.Model;
 import Views.View;
 
 import java.awt.*;
+import java.util.Iterator;
+import java.util.ResourceBundle;
 import java.util.Vector;
 
 /**
@@ -27,6 +29,13 @@ public class ControllerManager  {
     public void run(){
         for(Controller controller : this.controllers){
             controller.run();
+        }
+        Iterator<Controller> iterator = this.controllers.iterator();
+        while(iterator.hasNext()){
+            Controller controller = iterator.next();
+            if(!controller.getModel().isAlive()){
+                iterator.remove();
+            }
         }
     }
 

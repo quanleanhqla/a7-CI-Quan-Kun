@@ -13,13 +13,12 @@ public class PlaneEnemyControllerManager extends ControllerManager {
     int timeCounter = 0;
 
     public void run(){
-        timeCounter++;
         super.run();
+        timeCounter++;
         if(timeCounter > 90) {
             spawn();
             timeCounter = 0;
         }
-        destroy();
     }
 
     public void spawn(){
@@ -27,12 +26,6 @@ public class PlaneEnemyControllerManager extends ControllerManager {
         this.controllers.add(planeEnemyController);
     }
 
-    public void destroy(){
-        for(Controller controller : this.controllers){
-            if(controller.getModel().getX() < 0 || controller.getModel().getY() > 600){
-                this.controllers.remove(controller);
-            }
-        }
-    }
+
 
 }

@@ -1,5 +1,7 @@
 package Models;
 
+import java.awt.*;
+
 /**
  * Created by QuanLA on 12/8/2016.
  */
@@ -8,17 +10,28 @@ public class Model {
     private int y;
     private int width;
     private int height;
+    private boolean isAlive ;
 
     public Model(int x, int y, int width, int height) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+        isAlive = true;
     }
 
     public void move(int dx, int dy){
         this.x+=dx;
         this.y+=dy;
+    }
+
+    public boolean isAlive() {
+
+        return isAlive;
+    }
+
+    public void setAlive(boolean alive) {
+        isAlive = alive;
     }
 
     public int getX() {
@@ -51,5 +64,15 @@ public class Model {
 
     public void setHeight(int height) {
         this.height = height;
+    }
+
+    public Rectangle getRect(){
+        return new Rectangle(x, y, width, height);
+    }
+
+    public boolean intersects(Model other){
+        Rectangle rect1 = this.getRect();
+        Rectangle react2 = other.getRect();
+        return rect1.intersects(react2);
     }
 }
