@@ -30,8 +30,8 @@ public class BulletEnemyController extends Controller implements Body {
     public void onContact(Body other) {
         if(other instanceof PlaneController) {
             System.out.println("Ah aaa");
-            other.getModel().setAlive(false);
-            BodyManager.instance.remove(other);
+            this.getModel().setAlive(false);
+            BodyManager.instance.remove(this);
         }
     }
 }

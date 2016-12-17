@@ -30,7 +30,7 @@ public class BulletController extends Controller implements Body {
         if(other instanceof PlaneEnemyController) {
             System.out.println("Oh year");
             this.model.setAlive(false);
-            BodyManager.instance.remove(other);
+            BodyManager.instance.remove(this);
 
         }
     }

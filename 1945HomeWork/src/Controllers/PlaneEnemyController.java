@@ -61,8 +61,11 @@ public class PlaneEnemyController extends Controller implements Body {
     public void onContact(Body other) {
         if(other instanceof BulletController) {
             System.out.println("Hu hu");
-            this.model.setAlive(false);
-            BodyManager.instance.remove(other);
+            this.model.setHp(this.model.getHp() - 1);
+            if(this.model.getHp()  < 1) {
+                this.model.setAlive(false);
+                BodyManager.instance.remove(this);
+            }
         }
     }
 }

@@ -11,6 +11,7 @@ public class Model {
     private int width;
     private int height;
     private boolean isAlive ;
+    private int hp;
 
     public Model(int x, int y, int width, int height) {
         this.x = x;
@@ -18,6 +19,7 @@ public class Model {
         this.width = width;
         this.height = height;
         isAlive = true;
+        hp = 3;
     }
 
     public void move(int dx, int dy){
@@ -28,6 +30,14 @@ public class Model {
     public boolean isAlive() {
 
         return isAlive;
+    }
+
+    public int getHp() {
+        return hp;
+    }
+
+    public void setHp(int hp) {
+        this.hp = hp;
     }
 
     public void setAlive(boolean alive) {
