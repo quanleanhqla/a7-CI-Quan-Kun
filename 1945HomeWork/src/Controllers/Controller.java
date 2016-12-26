@@ -1,6 +1,7 @@
 package Controllers;
 
 import Models.Model;
+import Views.BaseView;
 import Views.View;
 
 import java.awt.*;
@@ -8,16 +9,14 @@ import java.awt.*;
 /**
  * Created by QuanLA on 12/8/2016.
  */
-public class Controller {
+public class Controller implements BaseController {
     protected Model model;
-    protected View view;
+    protected BaseView baseView;
 
-    public Controller() {
-    }
 
-    public Controller(Model model, View view) {
+    public Controller(Model model, BaseView view) {
         this.model = model;
-        this.view = view;
+        this.baseView = view;
     }
 
     public void run(){};
@@ -26,19 +25,15 @@ public class Controller {
         return model;
     }
 
-    public View getView() {
-        return view;
+    public BaseView getBaseView() {
+        return baseView;
     }
 
     public void setModel(Model model) {
         this.model = model;
     }
 
-    public void setView(View view) {
-        this.view = view;
-    }
-
     public void draw(Graphics g){
-        view.draw(g, model);
+        baseView.draw(g, model);
     }
 }

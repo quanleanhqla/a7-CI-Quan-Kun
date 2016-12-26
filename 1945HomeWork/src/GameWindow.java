@@ -1,7 +1,11 @@
 import Controllers.*;
 import Controllers.Manager.BodyManager;
+import Controllers.Manager.ControllerManager;
+import Controllers.Manager.GameSetting;
 import Controllers.Manager.PlaneEnemyControllerManager;
 import Models.Model;
+import Utils.Utils;
+import Views.BaseView;
 import Views.View;
 
 import java.awt.*;
@@ -10,7 +14,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
-import java.util.Iterator;
 import java.util.Vector;
 
 import static Utils.Utils.loadImage;
@@ -20,19 +23,23 @@ import static Utils.Utils.loadImage;
  */
 public class GameWindow extends Frame implements Runnable{
     Image background;
-    PlaneController planeController;
-    PlaneEnemyControllerManager planeEnemyControllerManager;
+    Vector<BaseController> baseControllers;
 
     BufferedImage backBuffer;
     public GameWindow() {
 
+        baseControllers = new Vector<>();
+
         KeySetting keySetting = new KeySetting(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, KeyEvent.VK_SPACE);
-        planeController = PlaneController.createPlane(300, 300, "resources/plane3.png", keySetting);
-        planeEnemyControllerManager = new PlaneEnemyControllerManager();
+        //planeController = PlaneController.createPlane(300, 300, "resources/plane3.png", keySetting);
+        baseControllers.add(PlaneController.instance);
+        baseControllers.add(new PlaneEnemyControllerManager());
+        baseControllers.add(new Bomb(new Model(300, 10, 30, 30), new View(Utils.loadImage("resources/mine.png"))));
+        baseControllers.add(ControllerManager.explosion);
 
 
         setVisible(true);
-        setSize(800, 600);
+        setSize(GameSetting.instance.getWidth(), GameSetting.instance.getHeight());
         backBuffer = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
         addWindowListener(new WindowListener() {
             @Override
@@ -85,7 +92,7 @@ public class GameWindow extends Frame implements Runnable{
             @Override
             public void keyPressed(KeyEvent e) {
                 System.out.println("keyPressed");
-                planeController.keyPressed(e);
+                PlaneController.instance.keyPressed(e);
             }
 
             @Override
@@ -99,25 +106,32 @@ public class GameWindow extends Frame implements Runnable{
 
     @Override
     public void update(Graphics g) {
-        Graphics backBufferGraphics = backBuffer.getGraphics();
-        backBufferGraphics.drawImage(background, 0, 0, 800, 600, null);
-        if(planeController.getModel().isAlive())
-            planeController.draw(backBufferGraphics);
-        planeEnemyControllerManager.draw(backBufferGraphics);
-        g.drawImage(backBuffer, 0, 0, 800, 600, null);
+        if(PlaneController.instance.getLive() > 0) {
+            Graphics backBufferGraphics = backBuffer.getGraphics();
+            backBufferGraphics.drawImage(background, 0, 0, GameSetting.instance.getWidth(), GameSetting.instance.getHeight(), null);
+            for (BaseController baseController : this.baseControllers) {
+                baseController.draw(backBufferGraphics);
+            }
+            g.drawImage(backBuffer, 0, 0, GameSetting.instance.getWidth(), GameSetting.instance.getHeight(), null);
+        }
+        else {
+            g.setFont(new Font("Algerian", Font.BOLD, 50));
+            g.setColor(Color.RED);
+            g.drawString("Game Over", 250, 300);
+        }
     }
 
 
     @Override
     public void run() {
-        planeEnemyControllerManager.spawn();
         while(true) {
             try {
                 this.repaint();
                 Thread.sleep(17);
-                planeEnemyControllerManager.run();
-                planeController.run();
-                BodyManager.instance.checkContact();
+                for(BaseController baseController : this.baseControllers){
+                    baseController.run();
+                }
+                BodyManager.instance.run();
 
             } catch (InterruptedException e) {
                 e.printStackTrace();

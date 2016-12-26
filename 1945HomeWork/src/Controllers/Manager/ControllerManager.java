@@ -1,19 +1,19 @@
 package Controllers.Manager;
 
+import Controllers.BaseController;
 import Controllers.Controller;
-import Models.Model;
-import Views.View;
 
 import java.awt.*;
 import java.util.Iterator;
-import java.util.ResourceBundle;
 import java.util.Vector;
 
 /**
  * Created by QuanLA on 12/11/2016.
  */
-public class ControllerManager  {
+public class ControllerManager implements BaseController {
     protected Vector<Controller> controllers;
+
+    public static final ControllerManager explosion = new ControllerManager();
 
 
     public ControllerManager() {
@@ -33,7 +33,7 @@ public class ControllerManager  {
         Iterator<Controller> iterator = this.controllers.iterator();
         while(iterator.hasNext()){
             Controller controller = iterator.next();
-            if(!controller.getModel().isAlive()){
+            if(!controller.getModel().isAlive() || controller.getModel().getY() > 600 || controller.getModel().getX() < 0){
                 iterator.remove();
             }
         }

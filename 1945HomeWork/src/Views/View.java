@@ -5,9 +5,9 @@ import Models.Model;
 import java.awt.*;
 
 /**
- * Created by QuanLA on 12/8/2016.
+ * Created by QuanLA on 12/24/2016.
  */
-public class View {
+public class View implements BaseView {
     private Image image;
 
     public View(Image image) {

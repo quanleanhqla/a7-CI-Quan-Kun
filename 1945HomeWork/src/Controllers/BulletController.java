@@ -1,22 +1,18 @@
 package Controllers;
 
+import Controllers.Enemies.PlaneEnemyController;
 import Controllers.Manager.BodyManager;
 import Models.Model;
+import Views.BaseView;
 import Views.View;
-
-import java.awt.*;
-import java.util.Iterator;
-import java.util.Vector;
 
 /**
  * Created by QuanLA on 12/5/2016.
  */
-public class BulletController extends Controller implements Body {
-    public BulletController() {
-    }
+public class BulletController extends Controller implements Body, BaseController {
 
-    public BulletController(Model model, View view) {
-        super(model, view);
+    public BulletController(Model model, View baseView) {
+        super(model, baseView);
         BodyManager.instance.register(this);
     }
 
@@ -27,11 +23,10 @@ public class BulletController extends Controller implements Body {
 
     @Override
     public void onContact(Body other) {
-        if(other instanceof PlaneEnemyController) {
+        if(other instanceof PlaneEnemyController || this.getModel().getY() < -50) {
             System.out.println("Oh year");
             this.model.setAlive(false);
-            BodyManager.instance.remove(this);
-
+            //((PlaneEnemyController)other).destroy();
         }
     }
 
