@@ -21,8 +21,8 @@ public class ControllerManager implements BaseController {
     }
 
     public void draw(Graphics g){
-        for(Controller controller : this.controllers){
-            controller.draw(g);
+        for(int i =0; i<controllers.size(); i++){
+            controllers.get(i).draw(g);
         }
     }
 

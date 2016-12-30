@@ -1,11 +1,15 @@
 import Controllers.*;
+import Controllers.Gifts.Bomb;
 import Controllers.Manager.BodyManager;
 import Controllers.Manager.ControllerManager;
 import Controllers.Manager.GameSetting;
 import Controllers.Manager.PlaneEnemyControllerManager;
+import Controllers.Scenes.GameScene;
+import Controllers.Scenes.MenuScene;
+import Controllers.Scenes.PlayGameScene;
+import Controllers.Scenes.SceneListener;
 import Models.Model;
 import Utils.Utils;
-import Views.BaseView;
 import Views.View;
 
 import java.awt.*;
@@ -14,6 +18,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
+import java.util.Stack;
 import java.util.Vector;
 
 import static Utils.Utils.loadImage;
@@ -21,21 +26,21 @@ import static Utils.Utils.loadImage;
 /**
  * Created by QuanLA on 12/5/2016.
  */
-public class GameWindow extends Frame implements Runnable{
-    Image background;
-    Vector<BaseController> baseControllers;
-
+public class GameWindow extends Frame implements Runnable, SceneListener{
     BufferedImage backBuffer;
+
+    GameScene currentScene;
+
+    Stack<GameScene> gameSceneStack;
+
+
+
     public GameWindow() {
 
-        baseControllers = new Vector<>();
+        gameSceneStack = new Stack<>();
 
-        KeySetting keySetting = new KeySetting(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, KeyEvent.VK_SPACE);
-        //planeController = PlaneController.createPlane(300, 300, "resources/plane3.png", keySetting);
-        baseControllers.add(PlaneController.instance);
-        baseControllers.add(new PlaneEnemyControllerManager());
-        baseControllers.add(new Bomb(new Model(300, 10, 30, 30), new View(Utils.loadImage("resources/mine.png"))));
-        baseControllers.add(ControllerManager.explosion);
+        this.replaceScene(new MenuScene(), false);
+
 
 
         setVisible(true);
@@ -81,7 +86,7 @@ public class GameWindow extends Frame implements Runnable{
 
             }
         });
-        background =  loadImage("resources/background.png");
+
 
         addKeyListener(new KeyListener() {
             @Override
@@ -92,7 +97,7 @@ public class GameWindow extends Frame implements Runnable{
             @Override
             public void keyPressed(KeyEvent e) {
                 System.out.println("keyPressed");
-                PlaneController.instance.keyPressed(e);
+                currentScene.keyPressed(e);
             }
 
             @Override
@@ -104,21 +109,28 @@ public class GameWindow extends Frame implements Runnable{
     }
 
 
+    public void replaceScene(GameScene newScene, boolean addToBackStack){
+        if(addToBackStack && currentScene != null){
+            gameSceneStack.push(currentScene);
+        }
+        currentScene = newScene;
+        currentScene.setSceneListener(this);
+    }
+
+    public void back(){
+        if(!gameSceneStack.isEmpty()){
+            currentScene = gameSceneStack.pop();
+        }
+    }
+
+
     @Override
     public void update(Graphics g) {
-        if(PlaneController.instance.getLive() > 0) {
             Graphics backBufferGraphics = backBuffer.getGraphics();
-            backBufferGraphics.drawImage(background, 0, 0, GameSetting.instance.getWidth(), GameSetting.instance.getHeight(), null);
-            for (BaseController baseController : this.baseControllers) {
-                baseController.draw(backBufferGraphics);
-            }
+            currentScene.update(backBufferGraphics);
+
             g.drawImage(backBuffer, 0, 0, GameSetting.instance.getWidth(), GameSetting.instance.getHeight(), null);
-        }
-        else {
-            g.setFont(new Font("Algerian", Font.BOLD, 50));
-            g.setColor(Color.RED);
-            g.drawString("Game Over", 250, 300);
-        }
+
     }
 
 
@@ -128,9 +140,7 @@ public class GameWindow extends Frame implements Runnable{
             try {
                 this.repaint();
                 Thread.sleep(17);
-                for(BaseController baseController : this.baseControllers){
-                    baseController.run();
-                }
+                currentScene.run();
                 BodyManager.instance.run();
 
             } catch (InterruptedException e) {

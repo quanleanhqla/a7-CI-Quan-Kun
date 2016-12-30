@@ -1,8 +1,12 @@
 package Controllers.Enemies;
 
 import Controllers.*;
+import Controllers.Gifts.Bomb;
 import Controllers.Manager.BodyManager;
 import Controllers.Manager.ControllerManager;
+import Controllers.Notifications.EventSubcriber;
+import Controllers.Notifications.EventType;
+import Controllers.Notifications.NotificationCenter;
 import Models.Model;
 import Utils.Utils;
 import Views.Animation;
@@ -19,7 +23,7 @@ import java.util.Vector;
 
 
 
-public class PlaneEnemyController extends Controller implements Body, BaseController {
+public class PlaneEnemyController extends Controller implements Body, BaseController, EventSubcriber {
     private Vector<BulletEnemyController> bulletE;
     private MoveBehavevior moveBehavevior;
     private ShootBehavior shootBehavior;
@@ -31,12 +35,13 @@ public class PlaneEnemyController extends Controller implements Body, BaseContro
         BodyManager.instance.register(this);
         this.moveBehavevior = moveBehavevior;
         this.shootBehavior = shootBehavior;
+        NotificationCenter.instance.register(this);
     }
 
     public void draw(Graphics g){
         super.draw(g);
-        for(BulletEnemyController bullet : this.bulletE){
-            bullet.draw(g);
+        for(int i = 0; i< bulletE.size(); i++){
+            bulletE.get(i).draw(g);
         }
     }
 
@@ -95,6 +100,8 @@ public class PlaneEnemyController extends Controller implements Body, BaseContro
                this.model.setAlive(false);
                Utils.playSound("resources/Explosion33.wav", false);
                this.destroy();
+               Bomb bomb = Bomb.create(model.getX(), model.getY());
+               ControllerManager.explosion.add(bomb);
            }
         }
     }
@@ -102,5 +109,15 @@ public class PlaneEnemyController extends Controller implements Body, BaseContro
     public void destroy(){
         ExplosionController explosionController = new ExplosionController(new Model(this.getModel().getX(), this.getModel().getY(), 70, 70), new Animation(Utils.loadSpriteSheet("resources/explosion.png", 32, 32, 6 ,1)));
         ControllerManager.explosion.add(explosionController);
+        this.model.setAlive(false);
+    }
+
+    @Override
+    public void onEvent(EventType eventType, Object params) {
+        switch (eventType){
+            case BOMB_EXPLOSION:
+                this.destroy();
+                break;
+        }
     }
 }

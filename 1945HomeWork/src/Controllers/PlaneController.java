@@ -4,6 +4,8 @@ import Controllers.Enemies.BulletEnemyController;
 import Controllers.Enemies.PlaneEnemyController;
 import Controllers.Manager.BodyManager;
 import Controllers.Manager.ControllerManager;
+import Controllers.Notifications.EventType;
+import Controllers.Notifications.NotificationCenter;
 import Models.Model;
 import Utils.Utils;
 import Views.Animation;
@@ -72,7 +74,10 @@ public class PlaneController extends Controller implements Body, BaseController 
         return planeController;
     }
 
+    int count;
+
     public void run(){
+        count++;
         super.run();
         if(!this.getModel().isAlive()){
             time++;
@@ -85,6 +90,10 @@ public class PlaneController extends Controller implements Body, BaseController 
                 }
             }
         }
+//        if(count>300){
+//            System.out.println("Explosion");
+//            NotificationCenter.instance.onEvent(EventType.BOMB_EXPLOSION, null);
+//        }
         Iterator<BulletController> bulletControllerIterator = this.bulletControllers.iterator();
         for(BulletController bulletController : this.bulletControllers){
             bulletController.run();
